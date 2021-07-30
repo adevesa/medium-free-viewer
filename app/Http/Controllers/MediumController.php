@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
 class MediumController extends Controller
 {
@@ -15,7 +16,9 @@ class MediumController extends Controller
         if(!$resultado) {
             $resultado = $this->getHtml($url);
         }
-        $resultado = str_replace("main.0b4c1932.js", "" , $resultado);
+        $identifier = Str::match('main\.([abcdef0-9])\.js', $resultado);
+        $jsIntruder = "main.$identifier.js";
+        $resultado = Str::replace($jsIntruder, "" , $resultado);
         return view('home', ['resultado' => $resultado]);
     }
 
