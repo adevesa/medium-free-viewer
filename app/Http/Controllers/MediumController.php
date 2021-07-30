@@ -16,7 +16,7 @@ class MediumController extends Controller
         if(!$resultado) {
             $resultado = $this->getHtml($url);
         }
-        $identifier = Str::match('main\.([abcdef0-9])\.js', $resultado);
+        $identifier = Str::match('/main\.([abcdef0-9]+)\.js/', $resultado);
         $jsIntruder = "main.$identifier.js";
         $resultado = Str::replace($jsIntruder, "" , $resultado);
         return view('home', ['resultado' => $resultado]);
