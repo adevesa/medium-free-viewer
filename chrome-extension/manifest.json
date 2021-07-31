@@ -1,0 +1,25 @@
+{
+  "name": "Medium Free Viewer",
+  "description": "See all the posts that you cannot freely!",
+  "version": "1.0",
+  "manifest_version": 3,
+  "permissions": ["activeTab", "scripting"],
+  "action": {
+    "default_title": "Click here for see this article free!",
+    "default_icon": {
+      "16": "/images/medium-free-viewer16.png",
+      "32": "/images/medium-free-viewer32.png",
+      "48": "/images/medium-free-viewer48.png",
+      "128": "/images/medium-free-viewer128.png"
+    }
+  },
+  "background": {
+      "service_worker": "background.js"
+  },
+  "icons": {
+    "16": "/images/medium-free-viewer16.png",
+    "32": "/images/medium-free-viewer32.png",
+    "48": "/images/medium-free-viewer48.png",
+    "128": "/images/medium-free-viewer128.png"
+  }
+}

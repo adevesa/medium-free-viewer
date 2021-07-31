@@ -2,4 +2,4 @@
 
 /** @var \Laravel\Lumen\Routing\Router $router */
 
-$router->get('/medium', 'MediumController@index');
+$router->get('/medium', MediumController::class);

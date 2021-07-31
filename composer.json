@@ -9,7 +9,8 @@
         "ext-curl": "*",
         "illuminate/redis": "^8.52",
         "laravel/lumen-framework": "^8.0",
-        "predis/predis": "^1.1"
+        "predis/predis": "^1.1",
+        "ext-zlib": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

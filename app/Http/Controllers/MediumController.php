@@ -2,40 +2,35 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\AllowMediumPost;
+use App\Actions\CompresionHtml;
+use App\Http\Rules\MediumRule;
+use App\Services\curlServiceContract;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Redis;
-use Illuminate\Support\Str;
 
 class MediumController extends Controller
 {
-
-    public function index()
+    public function __invoke(Request $request, curlServiceContract $curl)
     {
-        $url = request()->get('url');
-        $resultado = Cache::get($url);
-        if(!$resultado) {
-            $resultado = $this->getHtml($url);
+        $this->validate($request, [
+            'url' => ['required','url', new MediumRule]
+        ]);
+
+        $url = $request->url;
+
+        $htmlCompressed = Cache::get($url);
+
+        if(!$htmlCompressed) {
+            $content = $curl->getHtml($url);
+            $htmlCompressed = CompresionHtml::compress($content);
+            Cache::put($url, $htmlCompressed, Carbon::now()->addDays(5));
         }
-        $resultado = gzuncompress($resultado);
-        $identifier = Str::match('/main\.([abcdef0-9]+)\.js/', $resultado);
-        $jsIntruder = "main.$identifier.js";
-        $resultado = Str::replace($jsIntruder, "" , $resultado);
-        return view('home', ['resultado' => $resultado]);
-    }
 
-    private function getHtml($url)
-    {
-        $curl = curl_init($url);
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_FOLLOWLOCATION , $url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        $html = CompresionHtml::uncompress($htmlCompressed);
+        $html = AllowMediumPost::transform($html);
 
-        $resp = curl_exec($curl);
-        curl_close($curl);
-
-        $comprimido = gzcompress($resp);
-        Cache::put($url, $comprimido, Carbon::now()->addDays(5));
-        return $comprimido;
+        return view('home', ['resultado' => $html]);
     }
 }
